@@ -4,7 +4,7 @@
   <title><![CDATA[My Octopress Blog]]></title>
   <link href="http://liminzju.github.io/atom.xml" rel="self"/>
   <link href="http://liminzju.github.io/"/>
-  <updated>2014-04-25T16:03:47+08:00</updated>
+  <updated>2014-04-25T16:06:00+08:00</updated>
   <id>http://liminzju.github.io/</id>
   <author>
     <name><![CDATA[Your Name]]></name>
@@ -12,5 +12,23 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Helloworld2]]></title>
+    <link href="http://liminzju.github.io/blog/2014/04/25/helloworld2/"/>
+    <updated>2014-04-25T16:05:54+08:00</updated>
+    <id>http://liminzju.github.io/blog/2014/04/25/helloworld2</id>
+    <content type="html"><![CDATA[
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Helloworld]]></title>
+    <link href="http://liminzju.github.io/blog/2014/04/25/helloworld/"/>
+    <updated>2014-04-25T16:04:18+08:00</updated>
+    <id>http://liminzju.github.io/blog/2014/04/25/helloworld</id>
+    <content type="html"><![CDATA[
+]]></content>
+  </entry>
   
 </feed>
