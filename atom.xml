@@ -4,7 +4,7 @@
   <title><![CDATA[Min's notes]]></title>
   <link href="http://liminzju.github.io/atom.xml" rel="self"/>
   <link href="http://liminzju.github.io/"/>
-  <updated>2014-04-25T16:13:51+08:00</updated>
+  <updated>2014-04-25T17:28:59+08:00</updated>
   <id>http://liminzju.github.io/</id>
   <author>
     <name><![CDATA[Min]]></name>
@@ -14,20 +14,33 @@
 
   
   <entry>
-    <title type="html"><![CDATA[Hello2]]></title>
-    <link href="http://liminzju.github.io/blog/2014/04/25/hello2/"/>
-    <updated>2014-04-25T16:09:17+08:00</updated>
-    <id>http://liminzju.github.io/blog/2014/04/25/hello2</id>
-    <content type="html"><![CDATA[
+    <title type="html"><![CDATA[Abc]]></title>
+    <link href="http://liminzju.github.io/blog/2014/04/25/abc/"/>
+    <updated>2014-04-25T17:12:44+08:00</updated>
+    <id>http://liminzju.github.io/blog/2014/04/25/abc</id>
+    <content type="html"><![CDATA[<p>asdb</p>
+
+<p>c</p>
+
+<p>x
+zx</p>
+
+<p>c</p>
+
+<p>c</p>
 ]]></content>
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[Helloworld2]]></title>
-    <link href="http://liminzju.github.io/blog/2014/04/25/helloworld2/"/>
-    <updated>2014-04-25T16:05:54+08:00</updated>
-    <id>http://liminzju.github.io/blog/2014/04/25/helloworld2</id>
-    <content type="html"><![CDATA[
+    <title type="html"><![CDATA[Setup Octopress on Mavericks]]></title>
+    <link href="http://liminzju.github.io/blog/2014/04/25/setup-octopress-on-mavericks/"/>
+    <updated>2014-04-25T17:02:12+08:00</updated>
+    <id>http://liminzju.github.io/blog/2014/04/25/setup-octopress-on-mavericks</id>
+    <content type="html"><![CDATA[<h1>Setup Octopress on Mavericks</h1>
+
+<p><a href="http://octopress.org">Octopress</a> is a framework designed by Brandon Mathis for Jekyll, the blog aware static site generator powering Github Pages.</p>
+
+<p>I use <a href="http://blog.segmentfault.com/yaashion_xiang/1190000000364677">Yasshion_向</a>&rsquo;s instruction as reference. However, ruby1.9.3 can&rsquo;t be installed by brew. So I use <a href="rvm.io">rvm</a> to install ruby. Works perfectly!</p>
 ]]></content>
   </entry>
   
