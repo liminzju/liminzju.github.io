@@ -2,7 +2,7 @@
 <urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
     <url>
         <loc>http://liminzju.github.io/blog/2014/04/25/setup-octopress-on-mavericks/</loc>
-        <lastmod>2014-04-30T12:59:20+08:00</lastmod>
+        <lastmod>2014-04-30T13:06:12+08:00</lastmod>
     </url>
     <url>
         <loc>
@@ -11,20 +11,28 @@
         <lastmod>2014-04-30T12:14:10+08:00</lastmod>
     </url>
     <url>
+        <loc>http://liminzju.github.io/about/</loc>
+        <lastmod>2014-04-30T13:18:46+08:00</lastmod>
+    </url>
+    <url>
         <loc>http://liminzju.github.io/archives/</loc>
-        <lastmod>2014-04-30T12:59:20+08:00</lastmod>
+        <lastmod>2014-04-30T13:06:12+08:00</lastmod>
     </url>
     <url>
         <loc>http://liminzju.github.io/blog/archives/</loc>
-        <lastmod>2014-04-30T12:59:20+08:00</lastmod>
+        <lastmod>2014-04-30T13:06:12+08:00</lastmod>
+    </url>
+    <url>
+        <loc>http://liminzju.github.io/blog/categories/</loc>
+        <lastmod>2014-04-30T13:06:12+08:00</lastmod>
     </url>
     <url>
         <loc>http://liminzju.github.io/blog/</loc>
-        <lastmod>2014-04-30T12:59:20+08:00</lastmod>
+        <lastmod>2014-04-30T13:06:12+08:00</lastmod>
     </url>
     <url>
         <loc>http://liminzju.github.io/</loc>
-        <lastmod>2014-04-30T12:59:20+08:00</lastmod>
+        <lastmod>2014-04-30T13:06:12+08:00</lastmod>
     </url>
     <url>
         <loc>http://liminzju.github.io/robots.txt</loc>
