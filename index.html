@@ -1,78 +1,302 @@
 
-<!DOCTYPE html>
-<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
-<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
-<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<!DOCTYPE HTML>
+<html>
 <head>
-  <meta charset="utf-8">
-  <title>Min's notes</title>
-  <meta name="author" content="Min">
+	<script data-cfasync="false" type="text/javascript" src="//use.typekit.net/axj3cfp.js"></script>
+	<script data-cfasync="false" type="text/javascript">try{Typekit.load();}catch(e){}</script>
+	<meta charset="utf-8">
+	<title>Work and study notes  | Min's notes</title>
 
-  
-  <meta name="description" content="Setup Octopress on Mavericks Octopress is a framework designed by Brandon Mathis for Jekyll, the blog aware static site generator powering Github &hellip;">
-  
+<meta name="author" content="Min"> 
 
-  <!-- http://t.co/dKP3o1e -->
-  <meta name="HandheldFriendly" content="True">
-  <meta name="MobileOptimized" content="320">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Convert svn to git: case study axis2 project About me This page is to desribe svn to git conversion with taking axis2/rampart(under Z:\ &hellip;"> <meta name="keywords" content="">
 
-  
-  <link rel="canonical" href="http://liminzju.github.io">
-  <link href="/favicon.png" rel="icon">
-  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
-  <link href="/atom.xml" rel="alternate" title="Min's notes" type="application/atom+xml">
-  <script src="/javascripts/modernizr-2.0.js"></script>
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
-  <script src="/javascripts/octopress.js" type="text/javascript"></script>
-  
-  
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
+	<link href="/atom.xml" rel="alternate" title="Min's notes" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<script type="text/javascript" src="/javascripts/jquery.fancybox.pack.js"></script>
+
+<script language="Javascript" type="text/javascript">
+$(document).ready(
+  function() {
+    (function($) {
+      $(".fancybox[data-content-id]").each(function() {
+        this.href = $(this).data('content-id');
+      });
+      $(".fancybox").fancybox({
+        beforeLoad: function() {
+          var el, 
+              id = $(this.element).data('title-id');
+
+          if (id) {
+            el = $('#' + id);
+
+            if (el.length) {
+              this.title = el.html();
+            }
+          }
+          if ($(this).data('content')) {
+            this.content = $(this).data('content');
+          }
+        },
+        helpers: {
+          title: {
+            type: 'inside'
+          }
+        }
+      });
+    })(jQuery);
+  }
+);
+</script>
+
+	
 </head>
 
-<body   >
-  <header role="banner"><hgroup>
-  <h1><a href="/">Min's notes</a></h1>
-  
-    <h2>Work and study notes</h2>
-  
-</hgroup>
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">Min's notes</a></h1>
+<h4>Work and study notes</h4>
+<nav id="main-nav"><ul>
+	<li><a href="/">Blog</a></li>
+	<li><a href="/about">About</a></li>
+	<li><a href="/portfolio">Portfolio</a></li>
+	<li><a href="/archives">Archive</a></li>
+</ul>
+</nav>
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul>
+	<li><a href="/">Blog</a></li>
+	<li><a href="/about">About</a></li>
+	<li><a href="/portfolio">Portfolio</a></li>
+	<li><a href="/archives">Archive</a></li>
+</ul>
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="https://www.google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:liminzju.github.io">
+			</form>
+		</div>
+	</div>
+</nav>
+
 
 </header>
-  <nav role="navigation"><ul class="subscription" data-subscription="rss">
-  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
-  
+
+	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2014/04/26/convert_svn_to_git%3A_case_study_%60axis2%60_project/">
+		
+			Convert_svn_to_git:_case_study_`axis2`_project</a>
+	</h2>
+	<div class="entry-content">
+		<h1>Convert svn to git: case study <code>axis2</code> project</h1>
+
+<h2>About me</h2>
+
+<p>This page is to desribe svn to git conversion with taking <code>axis2/rampart</code>(under Z:\3rdParty_Source) for case study.</p>
+
+<h3>Background</h3>
+
+<p><code>axis2/rampart</code> is 3rdParty code used in our product. These two projects were added to clearcase 2 years ago. The offical code is managed by svn. We want to have our work based code storing to gitlab for further usage.</p>
+
+<h3>Problems</h3>
+
+<ol>
+<li>These two projects don&rsquo;t have svn information. We don&rsquo;t know their svn revision.</li>
+<li>Both of the projects have tons of checkins/tags/branches. We only need code/history under trunk.</li>
+</ol>
+
+
+<h3>Find code revision</h3>
+
+<p>First we need to check the clearcase version tree to get the first checkin time of <code>axis2c-src-latest-pre-1.7.0.zip</code>. It is about 2010-08.</p>
+
+<p>Second svn co the latest repo:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ svn co http://svn.apache.org/repos/asf/axis/axis2/c/core/trunk</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Then we can use <code>svn log</code> to get the logs before <code>2010-08</code>.</p>
+
+<p>On windows, I have <code>TortoiseSVN</code> installed, it has GUI to find log for specific file. And we can use <code>WINMerge</code> to compare folder.</p>
+
+<p>Following is what I do to find the revision:</p>
+
+<ol>
+<li>On Win, unzip <code>axis2c-src-latest-pre-1.7.0.zip</code> to <code>axis2c-src-latest-pre-1.7.0</code>.</li>
+<li>On Linux, pick a revison number before <code>2010-08</code> by using svn log, for example <code>r965406</code>.</li>
+<li>On Win, update windows code which with folder <code>axis2c</code> to revision <code>r965406</code>.</li>
+<li>Compare folder <code>axis2c-src-latest-pre-1.7.0</code> and <code>axis2c</code>.</li>
+<li>If code not match, use <code>TortoiseSVN</code> to look the checkin log of diff file. Then Pick an earlier revision.</li>
+<li>Report step 3 &ndash; step 5 until you find the right revison.</li>
+</ol>
+
+
+<p>Finally, I find the axis2c revision is <code>965406</code>. And rampart is <code>926565</code>.</p>
+
+<h3>Svn to git</h3>
+
+<ul>
+<li>Fetch svn repo by git-svn</li>
 </ul>
-  
-<form action="https://www.google.com/search" method="get">
-  <fieldset role="search">
-    <input type="hidden" name="q" value="site:liminzju.github.io" />
-    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
-  </fieldset>
-</form>
-  
-<ul class="main-navigation">
-  <li><a href="/">Blog</a></li>
-  <li><a href="/blog/archives">Archives</a></li>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ makedir axis2c
+</span><span class='line'>$ cd axis2c
+</span><span class='line'>$ git svn init http://svn.apache.org/repos/asf/axis/axis2/c/core/trunk
+</span><span class='line'>$ git fetch // This will take a few hours since axis2c has 1.5 million revisions</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>create project on gitlab for axis2c</li>
+<li>create branch/tag for axis2c r965406 in git</li>
 </ul>
 
-</nav>
-  <div id="main">
-    <div id="content">
-      <div class="blog-index">
-  
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/04/25/setup-octopress-on-mavericks/">Setup Octopress on Mavericks</a></h1>
-    
-    
-      <p class="meta">
-        
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git svn find-rev r965406
+</span><span class='line'>7e3146268ea776206f146473ffd172ddc18cbbf8
+</span><span class='line'>$ git checkout 7e3146268ea776206f146473ffd172ddc18cbbf8
+</span><span class='line'>$ git tag -a mstr_r965406
+</span><span class='line'>$ git checkout -b mstrbased
+</span><span class='line'>$ git remote add origin git@ctc-hd-2:axis2c/axis2c.git
+</span><span class='line'>$ git push -u origin master
+</span><span class='line'>$ git push -u origin --tag mstr_r965406
+</span><span class='line'>$ git push -u origin mstrbased
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>Do same thing for rampart</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ makedir rampart
+</span><span class='line'>$ cd rampart
+</span><span class='line'>$ git svn init http://svn.apache.org/repos/asf/axis/axis2/c/rampart/trunk
+</span><span class='line'>$ git fetch // This will take a few hours since rampart has 1.1 million revisions
+</span><span class='line'>
+</span><span class='line'>$ git svn find-rev r926565
+</span><span class='line'>b78df61ab875f378eb2378ee2b60fecd9f9f71ac
+</span><span class='line'>$ git checkout b78df61ab875f378eb2378ee2b60fecd9f9f71ac
+</span><span class='line'>$ git tag -a mstr_r926565
+</span><span class='line'>$ git checkout -b mstrbased
+</span><span class='line'>$ git remote add origin git@ctc-hd-2:axis2c/rampart.git
+</span><span class='line'>$ git push -u origin master
+</span><span class='line'>$ git push -u origin --tag mstr_r926565
+</span><span class='line'>$ git push -u origin mstrbased
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>instructions for git-svn fetch in remote repo</h3>
+
+<p>Take rampart for example:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git clone git@ctc-hd-2:axis2c/rampart.git
+</span><span class='line'>$ cd rampart
+</span><span class='line'>$ git svn init http://svn.apache.org/repos/asf/axis/axis2/c/rampart/trunk  // or edit .git/config directly 
+</span><span class='line'>$ cat .git/config
+</span><span class='line'>[core]
+</span><span class='line'>  repositoryformatversion = 0
+</span><span class='line'>  filemode = true
+</span><span class='line'>  bare = false
+</span><span class='line'>  logallrefupdates = true
+</span><span class='line'>[remote "origin"]
+</span><span class='line'>  fetch = +refs/heads/*:refs/remotes/origin/*
+</span><span class='line'>  url = git@ctc-hd-2:axis2c/rampart.git
+</span><span class='line'>[branch "master"]
+</span><span class='line'>  remote = origin
+</span><span class='line'>  merge = refs/heads/master
+</span><span class='line'>[svn-remote "svn"]
+</span><span class='line'>  url = http://svn.apache.org/repos/asf/axis/axis2/c/rampart/trunk
+</span><span class='line'>  fetch = :refs/remotes/git-svn
+</span><span class='line'>
+</span><span class='line'>//Copy sha from original repo:
+</span><span class='line'>$ echo  50e548d713a6aa58c527d6ad45b3381107f9e83a &gt;&gt; .git/refs/remotes/git-svn
+</span><span class='line'>$ git fetch
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Racap:</p>
+
+<ul>
+<li>Add the svn-remote to .git/config</li>
+<li>Add a pointer/SHA in .git/refs/remotes/git-svn</li>
+</ul>
+
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
 
 
 
@@ -84,65 +308,78 @@
   
 
 
-<time datetime="2014-04-25T17:02:12+08:00" pubdate data-updated="true">Apr 25<span>th</span>, 2014</time>
-        
-      </p>
-    
-  </header>
+<time datetime="2014-04-26T00:00:00+08:00" pubdate data-updated="true"></time></div>
+	
 
 
-  <div class="entry-content"><h1>Setup Octopress on Mavericks</h1>
+	
+</div></article>
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2014/04/25/setup-octopress-on-mavericks/">
+		
+			Setup Octopress on Mavericks</a>
+	</h2>
+	<div class="entry-content">
+		<h1>Setup Octopress on Mavericks</h1>
 
 <p><a href="http://octopress.org">Octopress</a> is a framework designed by Brandon Mathis for Jekyll, the blog aware static site generator powering Github Pages.</p>
 
 <p>I use <a href="http://blog.segmentfault.com/yaashion_xiang/1190000000364677">Yasshion_向</a>&rsquo;s instruction as reference. However, ruby1.9.3 can&rsquo;t be installed by brew. So I use <a href="rvm.io">rvm</a> to install ruby. Works perfectly!</p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-04-25T17:02:12+08:00" pubdate data-updated="true">Apr 25<span>th</span>, 2014</time></div>
+	
+
+<div class="tags">
+
+	<a class='category' href='/blog/categories/hi/'>hi</a>
+
 </div>
-  
-  
 
 
-    </article>
-  
-  <div class="pagination">
+	
+</div></article>
+
+<nav id="pagenavi">
     
-    <a href="/blog/archives">Blog Archives</a>
     
-  </div>
-</div>
-<aside class="sidebar">
-  
-    <section>
-  <h1>Recent Posts</h1>
-  <ul id="recent_posts">
-    
-      <li class="post">
-        <a href="/blog/2014/04/25/setup-octopress-on-mavericks/">Setup Octopress on Mavericks</a>
-      </li>
-    
-  </ul>
-</section>
+    <div class="center"><a href="/archives">Blog Archives</a></div>
+</nav></div>
+	<footer id="footer" class="inner">Copyright &copy; 2014
 
+    Min
 
-
-
-
-  
-</aside>
-
-    </div>
-  </div>
-  <footer role="contentinfo"><p>
-  Copyright &copy; 2014 - Min -
-  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
-</p>
-
+<br>
+Powered by Octopress.
 </footer>
-  
-
-
-
-
-
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
 
 
 
