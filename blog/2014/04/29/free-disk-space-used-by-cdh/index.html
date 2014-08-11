@@ -1,0 +1,198 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Free disk space used by CDH hadoop - Min's notes</title>
+	<meta name="author" content="Min">
+
+	
+	<meta name="description" content="Free disk space used by CDH hadoop Our Linux machine has only 50G for /. It is very small for our cdh hadoop service. The disk space can be used out &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="Min's notes" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script async="true" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+</head>
+
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">Min's notes</a></h1>
+<nav id="main-nav"><ul class="main">
+	<li><a href="/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+</ul>
+</nav>
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul class="main">
+	<li><a href="/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+</ul>
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="https://www.google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:liminzju.github.io">
+			</form>
+		</div>
+	</div>
+</nav>
+<nav id="sub-nav" class="alignright">
+	<div class="social">
+		
+		
+		
+		
+    
+		
+		
+		
+		
+		
+		<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+    
+	</div>
+	<form class="search" action="https://www.google.com/search" method="get">
+		<input class="alignright" type="text" name="q" results="0">
+		<input type="hidden" name="q" value="site:liminzju.github.io">
+	</form>
+</nav>
+
+</header>
+	
+		
+	
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">Free Disk Space Used by CDH Hadoop</h2>
+	<div class="entry-content"><h1>Free disk space used by CDH hadoop</h1>
+
+<p>Our Linux machine has only 50G for /. It is very small for our cdh hadoop service. The disk space can be used out easily. So we need to move these data to a disk with enough space.</p>
+
+<h4>Disk healthy check on linux</h4>
+
+<p>Let&rsquo;s see the disk usage statistics:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>[root@ctc-hd-1 home]# df -hFilesystem            Size  Used Avail Use% Mounted on/dev/mapper/vg_ctchd1-lv_root                       50G   26G   24G  53% /tmpfs                 3.8G  272K  3.8G   1% /dev/shm/dev/sda1             485M   38M  422M   9% /boot/dev/mapper/vg_ctchd1-lv_home                      400G   29G  351G   8% /home```
+</span><span class='line'>And the top disk ocuupied folers of CDH Installation are:
+</span><span class='line'>```/dfs  // hdfs files, data [root@ctc-hd-3 ~]# du -sh /dfs/18G     /dfs/
+</span><span class='line'>/opt/cloudera // upgrading packages, configurations
+</span><span class='line'>[root@ctc-hd-3 ~]# du -sh /opt/cloudera/13G     /opt/cloudera/```
+</span><span class='line'>
+</span><span class='line'>#### Free disk usage
+</span><span class='line'>/home has 400G, so we want to mv both /dfs and /opt/cloudera to /home so that we can free disk usage for /dev/mapper/vg_ctchd1-lv_root:
+</span><span class='line'>
+</span><span class='line'>- First stop all hadoop related service from cdh manager web page.
+</span><span class='line'>
+</span><span class='line'>- Then mv the folder and create soft link to original path for all machines in the cluster
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>[root@ctc-hd-3 home]# mv /opt/cloudera /home/cloudera
+[root@ctc-hd-3 home]# ln -s /home/cloudera /opt/cloudera
+[root@ctc-hd-3 home]# mv /dfs /home/dfs
+[root@ctc-hd-3 home]# ln -s /home/dfs /dfs</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>
+</span><span class='line'>- start hadoop service from cdh manager.
+</span><span class='line'>
+</span><span class='line'>#### However..
+</span><span class='line'>However, I forgot to stop hbase/hive/impala ... before mv the files. So have to restart those services in cloudera manager page / linux terminal.
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Need to check the hdfs:
+$ sudo -u hdfs hdfs fsck /
+We got The filesystem under path &lsquo;/&rsquo; is currput
+So run cmd:
+$ sudo -u hdfs hdfs fsck / -remove
+The filesystem under path &lsquo;/&rsquo; is HEALTHY</p>
+
+<p>Then restart hbase in cloudera manager page&#8220;`</p>
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-04-29T17:02:12+08:00" pubdate data-updated="true">Apr 29<span>th</span>, 2014</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/cdh/'>cdh</a>, <a class='category' href='/blog/categories/hadoop/'>hadoop</a>, <a class='category' href='/blog/categories/linux/'>linux</a>
+
+
+</div>
+	
+</div>
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+		
+		
+		
+		
+	</div>
+	
+</div>
+
+
+</div>
+	<footer id="footer" class="inner">Copyright &copy; 2014
+
+    Min
+
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+
+
+
+
+</body>
+</html>

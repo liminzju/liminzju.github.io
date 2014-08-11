@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: jdbc | Min's notes]]></title>
+  <link href="http://liminzju.github.io/blog/categories/jdbc/atom.xml" rel="self"/>
+  <link href="http://liminzju.github.io/"/>
+  <updated>2014-04-30T14:42:45+08:00</updated>
+  <id>http://liminzju.github.io/</id>
+  <author>
+    <name><![CDATA[Min]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Issues of Integrating JdbcWrapper with Onetier]]></title>
+    <link href="http://liminzju.github.io/blog/2014/04/24/issues-of-integrating-jdbcwrapper-with-onetier/"/>
+    <updated>2014-04-24T17:02:12+08:00</updated>
+    <id>http://liminzju.github.io/blog/2014/04/24/issues-of-integrating-jdbcwrapper-with-onetier</id>
+    <content type="html"><![CDATA[<h1>Issues of Integrating JdbcWrapper with Onetier</h1>
+
+<p>This page records issues we met when integrating JdbcWrapper with Onetier.</p>
+
+<h2>CatalogInternal has different callstack on windows and mac</h2>
+
+<p>Let&rsquo;s see the Mac callstack on child process side when creating a cataloginternal:</p>
+
+<p><code>
+3   libM8Base4.dylib                    0x000000010ee8123f _ZN5MBase17InteractiveAssertEPKcS1_i + 943
+4   libM8PDSrl2.dylib                   0x000000010f1ee247 _ZN14MSerialization18ReadDataStreamImpl10VerifyTypeENS_4TYPEE + 119
+5   libM8PDSrl2.dylib                   0x000000010f1f0917 _ZN14MSerialization18ReadDataStreamImplrsERNS_18SerializableObjectE + 39
+6   libM8DbCm3.dylib                    0x0000000111fa5488 _ZN13MMultiProcess29Execute4ParametersCommandImplIN3MDb15CatalogInternalEMS2_FvRKNS1_14DatabaseStringES5_S5_S5_ES3_S3_S3_S3_Li1ELb0EE11DeSerializeERN14MSerialization14ReadDataStreamE + 88
+7   libM8PrcCo2.dylib                   0x000000010efb3bd4 _ZN13MMultiProcess18ChildCommandHelper4ReadEv + 1940
+8   libM8PrcCo2.dylib                   0x000000010efb8672 _ZN13MMultiProcess22ChildCommandRunnerImpl4ReadEv + 1778
+9   libM8PrcCo2.dylib                   0x000000010efb86e3 _ZThn8_N13MMultiProcess22ChildCommandRunnerImpl4ReadEv + 35
+10  libM8PrcCo2.dylib                   0x000000010efb2c5c _ZN13MMultiProcess18ChildCommandHelper20ExecuteAndGetCommandEv + 60
+11  libM8PrcCo2.dylib                   0x000000010efb7916 _ZN13MMultiProcess22ChildCommandRunnerImpl7ExecuteEv + 54
+</code></p>
+
+<p>We can see we want to serialize DatabaseString in Frame 6, but Frame 5 uses ReadDataStreamImpl instead of using function in DatabaseString.cpp to serialize.</p>
+
+<p>First, we doubted it was a binary issue. But after problem still occured after rebuild. So we have to compare windows callstack and mac callstack.</p>
+
+<p>Some commands we use to debug mac process with lldb:</p>
+
+<p>```
+lldb -p processid // attach process by pid</p>
+
+<p>n</p>
+
+<p>s</p>
+
+<p>finish</p>
+
+<p>br s &mdash;f FileName.cpp &mdash;l 12</p>
+
+<p>```</p>
+
+<p>Simlar problem was met by Yuxiao before, so we use Yuxiao&rsquo;s suggestion to fix this issue.</p>
+
+<p><code>
+From: Xiao, Yuxiao Sent: Tuesday, April 22, 2014 12:33 AMTo: Li, Min; Zhu, Wei (Clark); Wu, Baoqi; Luo, MingCc: Luo, YiSubject: RE: Can you guys set up a meeting in CTC to discuss the JDBC connector today? In CatalogCommands.h, try bring highlighted files ahead of CommandMacros.h, that should solve the problem. I remember running similar issue with another command before.  #include "Database/Database/MultiProcessTable.h"#include "Database/Database/ProtectedSource/StreamHelpers.h"#include "Database/Database/ProtectedSource/CatalogInternal.h"#include "Database/Database/ProtectedSource/DatabaseString.h"#include "MultiProcess/Defines/CommandMacros.h"#include "Database/Database/Error.h" </code></p>
+
+<h2>ChildProcess crash in JNISupport</h2>
+
+<p>This is a caused by we use short name in MSIReg for jars on mac. And code in JNISupport will compare jar names from MSIReg with Jar name setting in code.
+<code>[HKEY_LOCAL_MACHINE\SOFTWARE\MicroStrategy\JNI Bridge\Config for DataServices]"Common ClassPath"="Jar/JCO.jar:Jar/ApachePOI.jar:Jar/MSTRExcelReader.jar:Jar/MSTRJDBCHelper.jar:Jar/DropboxAPI.jar:Jar/DropboxAPI2.jar:Jar/GDriveAPI.jar"
+</code>
+The length of <code>Jar/JCO.jar</code> is 11. However, if we set MSTRJDBCHelper.jar with length larger than 11. Then crash. See code:
+```</p>
+
+<pre><code>size_t expectedPos = (lTokens[j].length() - irJarFileNames[i].length()); // get a very big size_t   if(expectedPos &gt;= 0 &amp;&amp; lTokens[j].compare(expectedPos, irJarFileNames[i].length(), irJarFileNames[i]) == 0)```
+</code></pre>
+
+<p>Fix it by check the size_t.</p>
+]]></content>
+  </entry>
+  
+</feed>

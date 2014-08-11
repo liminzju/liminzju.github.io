@@ -4,7 +4,7 @@
   <title><![CDATA[Min's notes]]></title>
   <link href="http://liminzju.github.io/atom.xml" rel="self"/>
   <link href="http://liminzju.github.io/"/>
-  <updated>2014-04-30T13:26:51+08:00</updated>
+  <updated>2014-04-30T14:42:45+08:00</updated>
   <id>http://liminzju.github.io/</id>
   <author>
     <name><![CDATA[Min]]></name>
@@ -14,13 +14,13 @@
 
   
   <entry>
-    <title type="html"><![CDATA[Convert_svn_to_git:_case_study_`axis2`_project]]></title>
-    <link href="http://liminzju.github.io/blog/2014/04/26/convert_svn_to_git%3A_case_study_%60axis2%60_project/"/>
-    <updated>2014-04-26T00:00:00+08:00</updated>
-    <id>http://liminzju.github.io/blog/2014/04/26/convert_svn_to_git:_case_study_`axis2`_project</id>
+    <title type="html"><![CDATA[Convert svn to git]]></title>
+    <link href="http://liminzju.github.io/blog/2014/04/30/conver-svn-to-git/"/>
+    <updated>2014-04-30T17:02:12+08:00</updated>
+    <id>http://liminzju.github.io/blog/2014/04/30/conver-svn-to-git</id>
     <content type="html"><![CDATA[<h1>Convert svn to git: case study <code>axis2</code> project</h1>
 
-<h2>About me</h2>
+<h3>About me</h3>
 
 <p>This page is to desribe svn to git conversion with taking <code>axis2/rampart</code>(under Z:\3rdParty_Source) for case study.</p>
 
@@ -206,6 +206,130 @@
   </entry>
   
   <entry>
+    <title type="html"><![CDATA[Free disk space used by CDH hadoop]]></title>
+    <link href="http://liminzju.github.io/blog/2014/04/29/free-disk-space-used-by-cdh/"/>
+    <updated>2014-04-29T17:02:12+08:00</updated>
+    <id>http://liminzju.github.io/blog/2014/04/29/free-disk-space-used-by-cdh</id>
+    <content type="html"><![CDATA[<h1>Free disk space used by CDH hadoop</h1>
+
+<p>Our Linux machine has only 50G for /. It is very small for our cdh hadoop service. The disk space can be used out easily. So we need to move these data to a disk with enough space.</p>
+
+<h4>Disk healthy check on linux</h4>
+
+<p>Let&rsquo;s see the disk usage statistics:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>[root@ctc-hd-1 home]# df -hFilesystem            Size  Used Avail Use% Mounted on/dev/mapper/vg_ctchd1-lv_root                       50G   26G   24G  53% /tmpfs                 3.8G  272K  3.8G   1% /dev/shm/dev/sda1             485M   38M  422M   9% /boot/dev/mapper/vg_ctchd1-lv_home                      400G   29G  351G   8% /home```
+</span><span class='line'>And the top disk ocuupied folers of CDH Installation are:
+</span><span class='line'>```/dfs  // hdfs files, data [root@ctc-hd-3 ~]# du -sh /dfs/18G     /dfs/
+</span><span class='line'>/opt/cloudera // upgrading packages, configurations
+</span><span class='line'>[root@ctc-hd-3 ~]# du -sh /opt/cloudera/13G     /opt/cloudera/```
+</span><span class='line'>
+</span><span class='line'>#### Free disk usage
+</span><span class='line'>/home has 400G, so we want to mv both /dfs and /opt/cloudera to /home so that we can free disk usage for /dev/mapper/vg_ctchd1-lv_root:
+</span><span class='line'>
+</span><span class='line'>- First stop all hadoop related service from cdh manager web page.
+</span><span class='line'>
+</span><span class='line'>- Then mv the folder and create soft link to original path for all machines in the cluster
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>[root@ctc-hd-3 home]# mv /opt/cloudera /home/cloudera
+[root@ctc-hd-3 home]# ln -s /home/cloudera /opt/cloudera
+[root@ctc-hd-3 home]# mv /dfs /home/dfs
+[root@ctc-hd-3 home]# ln -s /home/dfs /dfs</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>
+</span><span class='line'>- start hadoop service from cdh manager.
+</span><span class='line'>
+</span><span class='line'>#### However..
+</span><span class='line'>However, I forgot to stop hbase/hive/impala ... before mv the files. So have to restart those services in cloudera manager page / linux terminal.
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Need to check the hdfs:
+$ sudo -u hdfs hdfs fsck /
+We got The filesystem under path &lsquo;/&rsquo; is currput
+So run cmd:
+$ sudo -u hdfs hdfs fsck / -remove
+The filesystem under path &lsquo;/&rsquo; is HEALTHY</p>
+
+<p>Then restart hbase in cloudera manager page&#8220;`</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Use gitlab on windows]]></title>
+    <link href="http://liminzju.github.io/blog/2014/04/25/use-git-on-windows/"/>
+    <updated>2014-04-25T17:02:12+08:00</updated>
+    <id>http://liminzju.github.io/blog/2014/04/25/use-git-on-windows</id>
+    <content type="html"><![CDATA[<h1>Use gitlab on windows</h1>
+
+<hr />
+
+<h3>Install git for windows</h3>
+
+<ol>
+<li><p>Download <a href="https://msysgit.googlecode.com/files/Git-1.9.0-preview20140217.exe">git</a> &amp; Install with default setting.</p></li>
+<li><p>Config Home Path</p></li>
+</ol>
+
+
+<p>Modify git home path. By default it use driver u as home path in my windwos, but you may don&rsquo;t have permission to that driver. Find &ldquo;profile&rdquo; file in D:\Program Files (x86)\Git\etc. Find following lines.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">HOME</span><span class="o">=</span><span class="s2">&quot;$(cd &quot;</span><span class="nx">$HOME</span><span class="s2">&quot; ; pwd)&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Add one line before it:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">HOME</span><span class="o">=</span><span class="s2">&quot;D:\GITHOME&quot;</span>
+</span><span class='line'><span class="nx">HOME</span><span class="o">=</span><span class="s2">&quot;$(cd &quot;</span><span class="nx">$HOME</span><span class="s2">&quot; ; pwd)&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Add SSH Key</h3>
+
+<ol>
+<li>Open &ldquo;Git Bash&rdquo;, and type ssh-keygen and paste pub key to your profile at gitlab.</li>
+</ol>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">$</span> <span class="nx">ssh</span><span class="o">-</span><span class="nx">keygen</span>
+</span><span class='line'><span class="nx">$</span> <span class="nx">cat</span> <span class="o">~</span><span class="err">/ssh/id_rsa.pub</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ol>
+<li><p>Open <a href="http://ctc-hd-2/profile/keys">http://ctc-hd-2/profile/keys</a> in your web browser. Then Add SSH Key.</p></li>
+<li><p>Now you can create a new project in git, and use the instructions to create your repo in Git Bash.</p></li>
+</ol>
+
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[Setup Octopress on Mavericks]]></title>
     <link href="http://liminzju.github.io/blog/2014/04/25/setup-octopress-on-mavericks/"/>
     <updated>2014-04-25T17:02:12+08:00</updated>
@@ -215,6 +339,139 @@
 <p><a href="http://octopress.org">Octopress</a> is a framework designed by Brandon Mathis for Jekyll, the blog aware static site generator powering Github Pages.</p>
 
 <p>I use <a href="http://blog.segmentfault.com/yaashion_xiang/1190000000364677">Yasshion_向</a>&rsquo;s instruction as reference. However, ruby1.9.3 can&rsquo;t be installed by brew. So I use <a href="rvm.io">rvm</a> to install ruby. Works perfectly!</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Convert bzr to git]]></title>
+    <link href="http://liminzju.github.io/blog/2014/04/25/convert-bzr-to-git/"/>
+    <updated>2014-04-25T17:02:12+08:00</updated>
+    <id>http://liminzju.github.io/blog/2014/04/25/convert-bzr-to-git</id>
+    <content type="html"><![CDATA[<h1>Convert bzr to git</h1>
+
+<h2>Overview</h2>
+
+<p>Some 3rdParty library uses bazzar to manage code, we want to use gitlab to manage those bzr code. This document is a quick instruction to convert a <code>bzr to git</code>.</p>
+
+<h3>Install related softwares</h3>
+
+<ul>
+<li>Install bzr, bzr-fastimport,<em> Install python-fastimport(0.9.2), the lastest version(0.9.4?) will cause bzr fastexport running to cant import binary stream problem. So we chose 0.9.2.My python version is 2.7.x on windows, 2.6.x on mac/linux. 2.7.x not work with bzr fastexport on mac.### Convert bzr to gitOn your linux/Mac:
+<code>bzr clone lp:xx bzr2gitcd bzr2gitgit initbzr fast-export --plain . | git fast-import
+</code></em> Now you got a existing git repo, push it to git### Push git project to gitlab* Open gitlab webpage, login and create a project, e.g. named bzr2git, following the <code>existing repo instruction to push</code> your branch, this instrunction will show when you create a new git project.
+<code>git checkout -f mastergit remote add origin git@ctc-hd-1:mili/bzr2git.gitgit push –u origin master</code>
+
+<h3>Update codeIf bzr has some new checkins, you can do the steps on your machine to import new checkins to git. If you run to some error in final step <code>git push –u origin master</code>, you can force git to push<code>git push –u origin +master</code>.</h3></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Issues of Integrating JdbcWrapper with Onetier]]></title>
+    <link href="http://liminzju.github.io/blog/2014/04/24/issues-of-integrating-jdbcwrapper-with-onetier/"/>
+    <updated>2014-04-24T17:02:12+08:00</updated>
+    <id>http://liminzju.github.io/blog/2014/04/24/issues-of-integrating-jdbcwrapper-with-onetier</id>
+    <content type="html"><![CDATA[<h1>Issues of Integrating JdbcWrapper with Onetier</h1>
+
+<p>This page records issues we met when integrating JdbcWrapper with Onetier.</p>
+
+<h2>CatalogInternal has different callstack on windows and mac</h2>
+
+<p>Let&rsquo;s see the Mac callstack on child process side when creating a cataloginternal:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>3   libM8Base4.dylib                    0x000000010ee8123f _ZN5MBase17InteractiveAssertEPKcS1_i + 943
+</span><span class='line'>4   libM8PDSrl2.dylib                   0x000000010f1ee247 _ZN14MSerialization18ReadDataStreamImpl10VerifyTypeENS_4TYPEE + 119
+</span><span class='line'>5   libM8PDSrl2.dylib                   0x000000010f1f0917 _ZN14MSerialization18ReadDataStreamImplrsERNS_18SerializableObjectE + 39
+</span><span class='line'>6   libM8DbCm3.dylib                    0x0000000111fa5488 _ZN13MMultiProcess29Execute4ParametersCommandImplIN3MDb15CatalogInternalEMS2_FvRKNS1_14DatabaseStringES5_S5_S5_ES3_S3_S3_S3_Li1ELb0EE11DeSerializeERN14MSerialization14ReadDataStreamE + 88
+</span><span class='line'>7   libM8PrcCo2.dylib                   0x000000010efb3bd4 _ZN13MMultiProcess18ChildCommandHelper4ReadEv + 1940
+</span><span class='line'>8   libM8PrcCo2.dylib                   0x000000010efb8672 _ZN13MMultiProcess22ChildCommandRunnerImpl4ReadEv + 1778
+</span><span class='line'>9   libM8PrcCo2.dylib                   0x000000010efb86e3 _ZThn8_N13MMultiProcess22ChildCommandRunnerImpl4ReadEv + 35
+</span><span class='line'>10  libM8PrcCo2.dylib                   0x000000010efb2c5c _ZN13MMultiProcess18ChildCommandHelper20ExecuteAndGetCommandEv + 60
+</span><span class='line'>11  libM8PrcCo2.dylib                   0x000000010efb7916 _ZN13MMultiProcess22ChildCommandRunnerImpl7ExecuteEv + 54</span></code></pre></td></tr></table></div></figure>
+
+
+<p>We can see we want to serialize DatabaseString in Frame 6, but Frame 5 uses ReadDataStreamImpl instead of using function in DatabaseString.cpp to serialize.</p>
+
+<p>First, we doubted it was a binary issue. But after problem still occured after rebuild. So we have to compare windows callstack and mac callstack.</p>
+
+<p>Some commands we use to debug mac process with lldb:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>lldb -p processid // attach process by pid
+</span><span class='line'>
+</span><span class='line'>n
+</span><span class='line'>
+</span><span class='line'>s
+</span><span class='line'>
+</span><span class='line'>finish
+</span><span class='line'>
+</span><span class='line'>br s --f FileName.cpp --l 12
+</span><span class='line'>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Simlar problem was met by Yuxiao before, so we use Yuxiao&rsquo;s suggestion to fix this issue.</p>
+
+<p><code>
+From: Xiao, Yuxiao Sent: Tuesday, April 22, 2014 12:33 AMTo: Li, Min; Zhu, Wei (Clark); Wu, Baoqi; Luo, MingCc: Luo, YiSubject: RE: Can you guys set up a meeting in CTC to discuss the JDBC connector today? In CatalogCommands.h, try bring highlighted files ahead of CommandMacros.h, that should solve the problem. I remember running similar issue with another command before.  #include "Database/Database/MultiProcessTable.h"#include "Database/Database/ProtectedSource/StreamHelpers.h"#include "Database/Database/ProtectedSource/CatalogInternal.h"#include "Database/Database/ProtectedSource/DatabaseString.h"#include "MultiProcess/Defines/CommandMacros.h"#include "Database/Database/Error.h" </code></p>
+
+<h2>ChildProcess crash in JNISupport</h2>
+
+<p>This is a caused by we use short name in MSIReg for jars on mac. And code in JNISupport will compare jar names from MSIReg with Jar name setting in code.
+<code>[HKEY_LOCAL_MACHINE\SOFTWARE\MicroStrategy\JNI Bridge\Config for DataServices]"Common ClassPath"="Jar/JCO.jar:Jar/ApachePOI.jar:Jar/MSTRExcelReader.jar:Jar/MSTRJDBCHelper.jar:Jar/DropboxAPI.jar:Jar/DropboxAPI2.jar:Jar/GDriveAPI.jar"
+</code>
+The length of <code>Jar/JCO.jar</code> is 11. However, if we set MSTRJDBCHelper.jar with length larger than 11. Then crash. See code:
+&#8220;`</p>
+
+<pre><code>size_t expectedPos = (lTokens[j].length() - irJarFileNames[i].length()); // get a very big size_t   if(expectedPos &gt;= 0 &amp;&amp; lTokens[j].compare(expectedPos, irJarFileNames[i].length(), irJarFileNames[i]) == 0)```
+</code></pre>
+
+<p>Fix it by check the size_t.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Install GitLab on centos 6.2]]></title>
+    <link href="http://liminzju.github.io/blog/2014/04/23/install-gitlab-on-centos/"/>
+    <updated>2014-04-23T17:02:12+08:00</updated>
+    <id>http://liminzju.github.io/blog/2014/04/23/install-gitlab-on-centos</id>
+    <content type="html"><![CDATA[<h1>Install GitLab on centos 6.2## Overview</h1>
+
+<p>Simple instruction to install gitlab.</p>
+
+<h3>Install</h3>
+
+<p>According to <a href="https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/README.md">reference</a>.
+Download community version of <a href="https://www.gitlab.com/downloads/">gitlab(omnibus)</a>, it’s free.
+<code>shsudo yum install openssh-serversudo yum install postfix # sendmail or exim is also OKsudo rpm -i gitlab-x.y.z_omnibus-x.el6.x86_64.rpm # this is the .rpm you downloadedsudo gitlab-ctl reconfiguresudo lokkit -s http -s ssh # open up the firewall for HTTP and SSH requestssudo gitlab-ctl start # Start all GitLab components</code></p>
+
+<h3>Configuration</h3>
+
+<p><code>
+sudo mkdir -p /etc/gitlab # Creating the gitlab.rb configuration filesudo touch /etc/gitlab/gitlab.rbsudo chmod 600 /etc/gitlab/gitlab.rbAdd to gitlab.rb:git_data_dir "/home/gd/git-data"Run sudo gitlab-ctl reconfigure</code></p>
+
+<p>Type <a href="">http://ip</a> in chrome,  if the page does not show correctly, then you need a reboot.You can login as an admin user with username <code>root</code> and password <code>5iveL!fe</code>.### Use gitlab
+First you need to add sshkey
+* Login with your own id to gitlab<em> In profile setttings, add a ssh pub key * In Linux terminal, run <code>$ ssh-keygen</code></em> Copy content from ~/.ssh/id_rsa.pub to step2</p>
 ]]></content>
   </entry>
   

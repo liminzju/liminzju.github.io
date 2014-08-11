@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: gitlab | Min's notes]]></title>
+  <link href="http://liminzju.github.io/blog/categories/gitlab/atom.xml" rel="self"/>
+  <link href="http://liminzju.github.io/"/>
+  <updated>2014-04-30T14:42:45+08:00</updated>
+  <id>http://liminzju.github.io/</id>
+  <author>
+    <name><![CDATA[Min]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Use gitlab on windows]]></title>
+    <link href="http://liminzju.github.io/blog/2014/04/25/use-git-on-windows/"/>
+    <updated>2014-04-25T17:02:12+08:00</updated>
+    <id>http://liminzju.github.io/blog/2014/04/25/use-git-on-windows</id>
+    <content type="html"><![CDATA[<h1>Use gitlab on windows</h1>
+
+<hr />
+
+<h3>Install git for windows</h3>
+
+<ol>
+<li><p>Download <a href="https://msysgit.googlecode.com/files/Git-1.9.0-preview20140217.exe">git</a> &amp; Install with default setting.</p></li>
+<li><p>Config Home Path</p></li>
+</ol>
+
+
+<p>Modify git home path. By default it use driver u as home path in my windwos, but you may don&rsquo;t have permission to that driver. Find &ldquo;profile&rdquo; file in D:\Program Files (x86)\Git\etc. Find following lines.</p>
+
+<p>```javascript</p>
+
+<pre><code>HOME="$(cd "$HOME" ; pwd)"
+</code></pre>
+
+<p><code>
+Add one line before it:
+</code>javascript</p>
+
+<pre><code>HOME="D:\GITHOME"
+HOME="$(cd "$HOME" ; pwd)"
+</code></pre>
+
+<p>```</p>
+
+<h3>Add SSH Key</h3>
+
+<ol>
+<li>Open &ldquo;Git Bash&rdquo;, and type ssh-keygen and paste pub key to your profile at gitlab.</li>
+</ol>
+
+
+<p><code>javascript
+$ ssh-keygen
+$ cat ~/ssh/id_rsa.pub
+</code>
+2. Open <a href="http://ctc-hd-2/profile/keys">http://ctc-hd-2/profile/keys</a> in your web browser. Then Add SSH Key.</p>
+
+<ol>
+<li>Now you can create a new project in git, and use the instructions to create your repo in Git Bash.</li>
+</ol>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Install GitLab on centos 6.2]]></title>
+    <link href="http://liminzju.github.io/blog/2014/04/23/install-gitlab-on-centos/"/>
+    <updated>2014-04-23T17:02:12+08:00</updated>
+    <id>http://liminzju.github.io/blog/2014/04/23/install-gitlab-on-centos</id>
+    <content type="html"><![CDATA[<h1>Install GitLab on centos 6.2## Overview</h1>
+
+<p>Simple instruction to install gitlab.</p>
+
+<h3>Install</h3>
+
+<p>According to <a href="https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/README.md">reference</a>.
+Download community version of <a href="https://www.gitlab.com/downloads/">gitlab(omnibus)</a>, it’s free.
+<code>shsudo yum install openssh-serversudo yum install postfix # sendmail or exim is also OKsudo rpm -i gitlab-x.y.z_omnibus-x.el6.x86_64.rpm # this is the .rpm you downloadedsudo gitlab-ctl reconfiguresudo lokkit -s http -s ssh # open up the firewall for HTTP and SSH requestssudo gitlab-ctl start # Start all GitLab components</code></p>
+
+<h3>Configuration</h3>
+
+<p><code>
+sudo mkdir -p /etc/gitlab # Creating the gitlab.rb configuration filesudo touch /etc/gitlab/gitlab.rbsudo chmod 600 /etc/gitlab/gitlab.rbAdd to gitlab.rb:git_data_dir "/home/gd/git-data"Run sudo gitlab-ctl reconfigure</code></p>
+
+<p>Type <a href="">http://ip</a> in chrome,  if the page does not show correctly, then you need a reboot.You can login as an admin user with username <code>root</code> and password <code>5iveL!fe</code>.### Use gitlab
+First you need to add sshkey
+* Login with your own id to gitlab<em> In profile setttings, add a ssh pub key * In Linux terminal, run <code>$ ssh-keygen</code></em> Copy content from ~/.ssh/id_rsa.pub to step2</p>
+]]></content>
+  </entry>
+  
+</feed>

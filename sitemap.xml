@@ -1,38 +1,58 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
     <url>
-        <loc>http://liminzju.github.io/blog/2014/04/25/setup-octopress-on-mavericks/</loc>
-        <lastmod>2014-04-30T13:06:12+08:00</lastmod>
+        <loc>http://liminzju.github.io/blog/2014/04/23/install-gitlab-on-centos/</loc>
+        <lastmod>2014-04-30T14:42:44+08:00</lastmod>
     </url>
     <url>
         <loc>
-            http://liminzju.github.io/blog/2014/04/26/convert_svn_to_git%3A_case_study_%60axis2%60_project/
+            http://liminzju.github.io/blog/2014/04/24/issues-of-integrating-jdbcwrapper-with-onetier/
         </loc>
-        <lastmod>2014-04-30T12:14:10+08:00</lastmod>
+        <lastmod>2014-04-30T14:31:22+08:00</lastmod>
+    </url>
+    <url>
+        <loc>http://liminzju.github.io/blog/2014/04/25/convert-bzr-to-git/</loc>
+        <lastmod>2014-04-30T14:31:22+08:00</lastmod>
+    </url>
+    <url>
+        <loc>http://liminzju.github.io/blog/2014/04/25/setup-octopress-on-mavericks/</loc>
+        <lastmod>2014-04-30T14:31:22+08:00</lastmod>
+    </url>
+    <url>
+        <loc>http://liminzju.github.io/blog/2014/04/25/use-git-on-windows/</loc>
+        <lastmod>2014-04-30T14:31:22+08:00</lastmod>
+    </url>
+    <url>
+        <loc>http://liminzju.github.io/blog/2014/04/29/free-disk-space-used-by-cdh/</loc>
+        <lastmod>2014-04-30T14:31:22+08:00</lastmod>
+    </url>
+    <url>
+        <loc>http://liminzju.github.io/blog/2014/04/30/conver-svn-to-git/</loc>
+        <lastmod>2014-04-30T14:40:39+08:00</lastmod>
     </url>
     <url>
         <loc>http://liminzju.github.io/about/</loc>
-        <lastmod>2014-04-30T13:18:46+08:00</lastmod>
+        <lastmod>2014-04-30T14:31:22+08:00</lastmod>
     </url>
     <url>
         <loc>http://liminzju.github.io/archives/</loc>
-        <lastmod>2014-04-30T13:06:12+08:00</lastmod>
+        <lastmod>2014-04-30T14:42:44+08:00</lastmod>
     </url>
     <url>
         <loc>http://liminzju.github.io/blog/archives/</loc>
-        <lastmod>2014-04-30T13:06:12+08:00</lastmod>
+        <lastmod>2014-04-30T14:42:44+08:00</lastmod>
     </url>
     <url>
         <loc>http://liminzju.github.io/blog/categories/</loc>
-        <lastmod>2014-04-30T13:06:12+08:00</lastmod>
+        <lastmod>2014-04-30T14:31:22+08:00</lastmod>
     </url>
     <url>
         <loc>http://liminzju.github.io/blog/</loc>
-        <lastmod>2014-04-30T13:06:12+08:00</lastmod>
+        <lastmod>2014-04-30T14:42:44+08:00</lastmod>
     </url>
     <url>
         <loc>http://liminzju.github.io/</loc>
-        <lastmod>2014-04-30T13:06:12+08:00</lastmod>
+        <lastmod>2014-04-30T14:42:44+08:00</lastmod>
     </url>
     <url>
         <loc>http://liminzju.github.io/robots.txt</loc>

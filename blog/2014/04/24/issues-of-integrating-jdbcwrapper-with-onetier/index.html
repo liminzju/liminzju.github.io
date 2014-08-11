@@ -1,0 +1,211 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Issues of Integrating JdbcWrapper with Onetier - Min's notes</title>
+	<meta name="author" content="Min">
+
+	
+	<meta name="description" content="Issues of Integrating JdbcWrapper with Onetier This page records issues we met when integrating JdbcWrapper with Onetier. CatalogInternal has &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="Min's notes" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script async="true" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+</head>
+
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">Min's notes</a></h1>
+<nav id="main-nav"><ul class="main">
+	<li><a href="/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+</ul>
+</nav>
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul class="main">
+	<li><a href="/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+</ul>
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="https://www.google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:liminzju.github.io">
+			</form>
+		</div>
+	</div>
+</nav>
+<nav id="sub-nav" class="alignright">
+	<div class="social">
+		
+		
+		
+		
+    
+		
+		
+		
+		
+		
+		<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+    
+	</div>
+	<form class="search" action="https://www.google.com/search" method="get">
+		<input class="alignright" type="text" name="q" results="0">
+		<input type="hidden" name="q" value="site:liminzju.github.io">
+	</form>
+</nav>
+
+</header>
+	
+		
+	
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">Issues of Integrating JdbcWrapper With Onetier</h2>
+	<div class="entry-content"><h1>Issues of Integrating JdbcWrapper with Onetier</h1>
+
+<p>This page records issues we met when integrating JdbcWrapper with Onetier.</p>
+
+<h2>CatalogInternal has different callstack on windows and mac</h2>
+
+<p>Let&rsquo;s see the Mac callstack on child process side when creating a cataloginternal:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>3   libM8Base4.dylib                    0x000000010ee8123f _ZN5MBase17InteractiveAssertEPKcS1_i + 943
+</span><span class='line'>4   libM8PDSrl2.dylib                   0x000000010f1ee247 _ZN14MSerialization18ReadDataStreamImpl10VerifyTypeENS_4TYPEE + 119
+</span><span class='line'>5   libM8PDSrl2.dylib                   0x000000010f1f0917 _ZN14MSerialization18ReadDataStreamImplrsERNS_18SerializableObjectE + 39
+</span><span class='line'>6   libM8DbCm3.dylib                    0x0000000111fa5488 _ZN13MMultiProcess29Execute4ParametersCommandImplIN3MDb15CatalogInternalEMS2_FvRKNS1_14DatabaseStringES5_S5_S5_ES3_S3_S3_S3_Li1ELb0EE11DeSerializeERN14MSerialization14ReadDataStreamE + 88
+</span><span class='line'>7   libM8PrcCo2.dylib                   0x000000010efb3bd4 _ZN13MMultiProcess18ChildCommandHelper4ReadEv + 1940
+</span><span class='line'>8   libM8PrcCo2.dylib                   0x000000010efb8672 _ZN13MMultiProcess22ChildCommandRunnerImpl4ReadEv + 1778
+</span><span class='line'>9   libM8PrcCo2.dylib                   0x000000010efb86e3 _ZThn8_N13MMultiProcess22ChildCommandRunnerImpl4ReadEv + 35
+</span><span class='line'>10  libM8PrcCo2.dylib                   0x000000010efb2c5c _ZN13MMultiProcess18ChildCommandHelper20ExecuteAndGetCommandEv + 60
+</span><span class='line'>11  libM8PrcCo2.dylib                   0x000000010efb7916 _ZN13MMultiProcess22ChildCommandRunnerImpl7ExecuteEv + 54</span></code></pre></td></tr></table></div></figure>
+
+
+<p>We can see we want to serialize DatabaseString in Frame 6, but Frame 5 uses ReadDataStreamImpl instead of using function in DatabaseString.cpp to serialize.</p>
+
+<p>First, we doubted it was a binary issue. But after problem still occured after rebuild. So we have to compare windows callstack and mac callstack.</p>
+
+<p>Some commands we use to debug mac process with lldb:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>lldb -p processid // attach process by pid
+</span><span class='line'>
+</span><span class='line'>n
+</span><span class='line'>
+</span><span class='line'>s
+</span><span class='line'>
+</span><span class='line'>finish
+</span><span class='line'>
+</span><span class='line'>br s --f FileName.cpp --l 12
+</span><span class='line'>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Simlar problem was met by Yuxiao before, so we use Yuxiao&rsquo;s suggestion to fix this issue.</p>
+
+<p><code>
+From: Xiao, Yuxiao Sent: Tuesday, April 22, 2014 12:33 AMTo: Li, Min; Zhu, Wei (Clark); Wu, Baoqi; Luo, MingCc: Luo, YiSubject: RE: Can you guys set up a meeting in CTC to discuss the JDBC connector today? In CatalogCommands.h, try bring highlighted files ahead of CommandMacros.h, that should solve the problem. I remember running similar issue with another command before.  #include "Database/Database/MultiProcessTable.h"#include "Database/Database/ProtectedSource/StreamHelpers.h"#include "Database/Database/ProtectedSource/CatalogInternal.h"#include "Database/Database/ProtectedSource/DatabaseString.h"#include "MultiProcess/Defines/CommandMacros.h"#include "Database/Database/Error.h" </code></p>
+
+<h2>ChildProcess crash in JNISupport</h2>
+
+<p>This is a caused by we use short name in MSIReg for jars on mac. And code in JNISupport will compare jar names from MSIReg with Jar name setting in code.
+<code>[HKEY_LOCAL_MACHINE\SOFTWARE\MicroStrategy\JNI Bridge\Config for DataServices]"Common ClassPath"="Jar/JCO.jar:Jar/ApachePOI.jar:Jar/MSTRExcelReader.jar:Jar/MSTRJDBCHelper.jar:Jar/DropboxAPI.jar:Jar/DropboxAPI2.jar:Jar/GDriveAPI.jar"
+</code>
+The length of <code>Jar/JCO.jar</code> is 11. However, if we set MSTRJDBCHelper.jar with length larger than 11. Then crash. See code:
+&#8220;`</p>
+
+<pre><code>size_t expectedPos = (lTokens[j].length() - irJarFileNames[i].length()); // get a very big size_t   if(expectedPos &gt;= 0 &amp;&amp; lTokens[j].compare(expectedPos, irJarFileNames[i].length(), irJarFileNames[i]) == 0)```
+</code></pre>
+
+<p>Fix it by check the size_t.</p>
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-04-24T17:02:12+08:00" pubdate data-updated="true">Apr 24<span>th</span>, 2014</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/jdbc/'>jdbc</a>
+
+
+</div>
+	
+</div>
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+		
+		
+		
+		
+	</div>
+	
+</div>
+
+
+</div>
+	<footer id="footer" class="inner">Copyright &copy; 2014
+
+    Min
+
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+
+
+
+
+</body>
+</html>

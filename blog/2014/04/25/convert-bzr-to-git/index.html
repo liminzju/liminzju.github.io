@@ -3,11 +3,11 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>Setup Octopress on Mavericks - Min's notes</title>
+	<title>Convert bzr to git - Min's notes</title>
 	<meta name="author" content="Min">
 
 	
-	<meta name="description" content="Setup Octopress on Mavericks Octopress is a framework designed by Brandon Mathis for Jekyll, the blog aware static site generator powering Github &hellip;">
+	<meta name="description" content="Convert bzr to git Overview Some 3rdParty library uses bazzar to manage code, we want to use gitlab to manage those bzr code. This document is a &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -74,12 +74,24 @@
 		
 	
 	<div id="content" class="inner"><article class="post">
-	<h2 class="title">Setup Octopress on Mavericks</h2>
-	<div class="entry-content"><h1>Setup Octopress on Mavericks</h1>
+	<h2 class="title">Convert Bzr to Git</h2>
+	<div class="entry-content"><h1>Convert bzr to git</h1>
 
-<p><a href="http://octopress.org">Octopress</a> is a framework designed by Brandon Mathis for Jekyll, the blog aware static site generator powering Github Pages.</p>
+<h2>Overview</h2>
 
-<p>I use <a href="http://blog.segmentfault.com/yaashion_xiang/1190000000364677">Yasshion_向</a>&rsquo;s instruction as reference. However, ruby1.9.3 can&rsquo;t be installed by brew. So I use <a href="rvm.io">rvm</a> to install ruby. Works perfectly!</p>
+<p>Some 3rdParty library uses bazzar to manage code, we want to use gitlab to manage those bzr code. This document is a quick instruction to convert a <code>bzr to git</code>.</p>
+
+<h3>Install related softwares</h3>
+
+<ul>
+<li>Install bzr, bzr-fastimport,<em> Install python-fastimport(0.9.2), the lastest version(0.9.4?) will cause bzr fastexport running to cant import binary stream problem. So we chose 0.9.2.My python version is 2.7.x on windows, 2.6.x on mac/linux. 2.7.x not work with bzr fastexport on mac.### Convert bzr to gitOn your linux/Mac:
+<code>bzr clone lp:xx bzr2gitcd bzr2gitgit initbzr fast-export --plain . | git fast-import
+</code></em> Now you got a existing git repo, push it to git### Push git project to gitlab* Open gitlab webpage, login and create a project, e.g. named bzr2git, following the <code>existing repo instruction to push</code> your branch, this instrunction will show when you create a new git project.
+<code>git checkout -f mastergit remote add origin git@ctc-hd-1:mili/bzr2git.gitgit push –u origin master</code>
+
+<h3>Update codeIf bzr has some new checkins, you can do the steps on your machine to import new checkins to git. If you run to some error in final step <code>git push –u origin master</code>, you can force git to push<code>git push –u origin +master</code>.</h3></li>
+</ul>
+
 </div>
 
 
@@ -100,7 +112,7 @@
 	<div class="tags">
 
 
-	<a class='category' href='/blog/categories/octopress/'>octopress</a>
+	<a class='category' href='/blog/categories/bzr/'>bzr</a>, <a class='category' href='/blog/categories/git/'>git</a>
 
 
 </div>

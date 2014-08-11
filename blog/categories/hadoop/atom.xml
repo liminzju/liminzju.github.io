@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: hadoop | Min's notes]]></title>
+  <link href="http://liminzju.github.io/blog/categories/hadoop/atom.xml" rel="self"/>
+  <link href="http://liminzju.github.io/"/>
+  <updated>2014-04-30T14:42:45+08:00</updated>
+  <id>http://liminzju.github.io/</id>
+  <author>
+    <name><![CDATA[Min]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Free disk space used by CDH hadoop]]></title>
+    <link href="http://liminzju.github.io/blog/2014/04/29/free-disk-space-used-by-cdh/"/>
+    <updated>2014-04-29T17:02:12+08:00</updated>
+    <id>http://liminzju.github.io/blog/2014/04/29/free-disk-space-used-by-cdh</id>
+    <content type="html"><![CDATA[<h1>Free disk space used by CDH hadoop</h1>
+
+<p>Our Linux machine has only 50G for /. It is very small for our cdh hadoop service. The disk space can be used out easily. So we need to move these data to a disk with enough space.</p>
+
+<h4>Disk healthy check on linux</h4>
+
+<p>Let&rsquo;s see the disk usage statistics:</p>
+
+<p><code>
+[root@ctc-hd-1 home]# df -hFilesystem            Size  Used Avail Use% Mounted on/dev/mapper/vg_ctchd1-lv_root                       50G   26G   24G  53% /tmpfs                 3.8G  272K  3.8G   1% /dev/shm/dev/sda1             485M   38M  422M   9% /boot/dev/mapper/vg_ctchd1-lv_home                      400G   29G  351G   8% /home</code>
+And the top disk ocuupied folers of CDH Installation are:
+<code>/dfs  // hdfs files, data [root@ctc-hd-3 ~]# du -sh /dfs/18G     /dfs/
+/opt/cloudera // upgrading packages, configurations
+[root@ctc-hd-3 ~]# du -sh /opt/cloudera/13G     /opt/cloudera/</code></p>
+
+<h4>Free disk usage</h4>
+
+<p>/home has 400G, so we want to mv both /dfs and /opt/cloudera to /home so that we can free disk usage for /dev/mapper/vg_ctchd1-lv_root:</p>
+
+<ul>
+<li><p>First stop all hadoop related service from cdh manager web page.</p></li>
+<li><p>Then mv the folder and create soft link to original path for all machines in the cluster</p></li>
+</ul>
+
+
+<p><code>
+[root@ctc-hd-3 home]# mv /opt/cloudera /home/cloudera
+[root@ctc-hd-3 home]# ln -s /home/cloudera /opt/cloudera
+[root@ctc-hd-3 home]# mv /dfs /home/dfs
+[root@ctc-hd-3 home]# ln -s /home/dfs /dfs
+</code></p>
+
+<ul>
+<li>start hadoop service from cdh manager.</li>
+</ul>
+
+
+<h4>However..</h4>
+
+<p>However, I forgot to stop hbase/hive/impala &hellip; before mv the files. So have to restart those services in cloudera manager page / linux terminal.</p>
+
+<p>```
+Need to check the hdfs:
+$ sudo -u hdfs hdfs fsck /
+We got The filesystem under path &lsquo;/&rsquo; is currput
+So run cmd:
+$ sudo -u hdfs hdfs fsck / -remove
+The filesystem under path &lsquo;/&rsquo; is HEALTHY</p>
+
+<p>Then restart hbase in cloudera manager page```</p>
+]]></content>
+  </entry>
+  
+</feed>

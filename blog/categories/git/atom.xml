@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: git | Min's notes]]></title>
+  <link href="http://liminzju.github.io/blog/categories/git/atom.xml" rel="self"/>
+  <link href="http://liminzju.github.io/"/>
+  <updated>2014-04-30T14:42:45+08:00</updated>
+  <id>http://liminzju.github.io/</id>
+  <author>
+    <name><![CDATA[Min]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Convert svn to git]]></title>
+    <link href="http://liminzju.github.io/blog/2014/04/30/conver-svn-to-git/"/>
+    <updated>2014-04-30T17:02:12+08:00</updated>
+    <id>http://liminzju.github.io/blog/2014/04/30/conver-svn-to-git</id>
+    <content type="html"><![CDATA[<h1>Convert svn to git: case study <code>axis2</code> project</h1>
+
+<h3>About me</h3>
+
+<p>This page is to desribe svn to git conversion with taking <code>axis2/rampart</code>(under Z:\3rdParty_Source) for case study.</p>
+
+<h3>Background</h3>
+
+<p><code>axis2/rampart</code> is 3rdParty code used in our product. These two projects were added to clearcase 2 years ago. The offical code is managed by svn. We want to have our work based code storing to gitlab for further usage.</p>
+
+<h3>Problems</h3>
+
+<ol>
+<li>These two projects don&rsquo;t have svn information. We don&rsquo;t know their svn revision.</li>
+<li>Both of the projects have tons of checkins/tags/branches. We only need code/history under trunk.</li>
+</ol>
+
+
+<h3>Find code revision</h3>
+
+<p>First we need to check the clearcase version tree to get the first checkin time of <code>axis2c-src-latest-pre-1.7.0.zip</code>. It is about 2010-08.</p>
+
+<p>Second svn co the latest repo:</p>
+
+<p><code>
+$ svn co http://svn.apache.org/repos/asf/axis/axis2/c/core/trunk
+</code></p>
+
+<p>Then we can use <code>svn log</code> to get the logs before <code>2010-08</code>.</p>
+
+<p>On windows, I have <code>TortoiseSVN</code> installed, it has GUI to find log for specific file. And we can use <code>WINMerge</code> to compare folder.</p>
+
+<p>Following is what I do to find the revision:</p>
+
+<ol>
+<li>On Win, unzip <code>axis2c-src-latest-pre-1.7.0.zip</code> to <code>axis2c-src-latest-pre-1.7.0</code>.</li>
+<li>On Linux, pick a revison number before <code>2010-08</code> by using svn log, for example <code>r965406</code>.</li>
+<li>On Win, update windows code which with folder <code>axis2c</code> to revision <code>r965406</code>.</li>
+<li>Compare folder <code>axis2c-src-latest-pre-1.7.0</code> and <code>axis2c</code>.</li>
+<li>If code not match, use <code>TortoiseSVN</code> to look the checkin log of diff file. Then Pick an earlier revision.</li>
+<li>Report step 3 &ndash; step 5 until you find the right revison.</li>
+</ol>
+
+
+<p>Finally, I find the axis2c revision is <code>965406</code>. And rampart is <code>926565</code>.</p>
+
+<h3>Svn to git</h3>
+
+<ul>
+<li>Fetch svn repo by git-svn</li>
+</ul>
+
+
+<p><code>
+$ makedir axis2c
+$ cd axis2c
+$ git svn init http://svn.apache.org/repos/asf/axis/axis2/c/core/trunk
+$ git fetch // This will take a few hours since axis2c has 1.5 million revisions
+</code>
+* create project on gitlab for axis2c
+* create branch/tag for axis2c r965406 in git</p>
+
+<p>```
+$ git svn find-rev r965406
+7e3146268ea776206f146473ffd172ddc18cbbf8
+$ git checkout 7e3146268ea776206f146473ffd172ddc18cbbf8
+$ git tag -a mstr_r965406
+$ git checkout -b mstrbased
+$ git remote add origin git@ctc-hd-2:axis2c/axis2c.git
+$ git push -u origin master
+$ git push -u origin &mdash;tag mstr_r965406
+$ git push -u origin mstrbased</p>
+
+<p>```</p>
+
+<ul>
+<li>Do same thing for rampart</li>
+</ul>
+
+
+<p>```
+$ makedir rampart
+$ cd rampart
+$ git svn init <a href="http://svn.apache.org/repos/asf/axis/axis2/c/rampart/trunk">http://svn.apache.org/repos/asf/axis/axis2/c/rampart/trunk</a>
+$ git fetch // This will take a few hours since rampart has 1.1 million revisions</p>
+
+<p>$ git svn find-rev r926565
+b78df61ab875f378eb2378ee2b60fecd9f9f71ac
+$ git checkout b78df61ab875f378eb2378ee2b60fecd9f9f71ac
+$ git tag -a mstr_r926565
+$ git checkout -b mstrbased
+$ git remote add origin git@ctc-hd-2:axis2c/rampart.git
+$ git push -u origin master
+$ git push -u origin &mdash;tag mstr_r926565
+$ git push -u origin mstrbased</p>
+
+<p>```</p>
+
+<h3>instructions for git-svn fetch in remote repo</h3>
+
+<p>Take rampart for example:</p>
+
+<p>```
+$ git clone git@ctc-hd-2:axis2c/rampart.git
+$ cd rampart
+$ git svn init <a href="http://svn.apache.org/repos/asf/axis/axis2/c/rampart/trunk">http://svn.apache.org/repos/asf/axis/axis2/c/rampart/trunk</a>  // or edit .git/config directly
+$ cat .git/config
+[core]</p>
+
+<pre><code>repositoryformatversion = 0
+filemode = true
+bare = false
+logallrefupdates = true
+</code></pre>
+
+<p>[remote &ldquo;origin&rdquo;]</p>
+
+<pre><code>fetch = +refs/heads/*:refs/remotes/origin/*
+url = git@ctc-hd-2:axis2c/rampart.git
+</code></pre>
+
+<p>[branch &ldquo;master&rdquo;]</p>
+
+<pre><code>remote = origin
+merge = refs/heads/master
+</code></pre>
+
+<p>[svn-remote &ldquo;svn&rdquo;]</p>
+
+<pre><code>url = http://svn.apache.org/repos/asf/axis/axis2/c/rampart/trunk
+fetch = :refs/remotes/git-svn
+</code></pre>
+
+<p>//Copy sha from original repo:
+$ echo  50e548d713a6aa58c527d6ad45b3381107f9e83a >> .git/refs/remotes/git-svn
+$ git fetch</p>
+
+<p>```</p>
+
+<p>Racap:</p>
+
+<ul>
+<li>Add the svn-remote to .git/config</li>
+<li>Add a pointer/SHA in .git/refs/remotes/git-svn</li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Use gitlab on windows]]></title>
+    <link href="http://liminzju.github.io/blog/2014/04/25/use-git-on-windows/"/>
+    <updated>2014-04-25T17:02:12+08:00</updated>
+    <id>http://liminzju.github.io/blog/2014/04/25/use-git-on-windows</id>
+    <content type="html"><![CDATA[<h1>Use gitlab on windows</h1>
+
+<hr />
+
+<h3>Install git for windows</h3>
+
+<ol>
+<li><p>Download <a href="https://msysgit.googlecode.com/files/Git-1.9.0-preview20140217.exe">git</a> &amp; Install with default setting.</p></li>
+<li><p>Config Home Path</p></li>
+</ol>
+
+
+<p>Modify git home path. By default it use driver u as home path in my windwos, but you may don&rsquo;t have permission to that driver. Find &ldquo;profile&rdquo; file in D:\Program Files (x86)\Git\etc. Find following lines.</p>
+
+<p>```javascript</p>
+
+<pre><code>HOME="$(cd "$HOME" ; pwd)"
+</code></pre>
+
+<p><code>
+Add one line before it:
+</code>javascript</p>
+
+<pre><code>HOME="D:\GITHOME"
+HOME="$(cd "$HOME" ; pwd)"
+</code></pre>
+
+<p>```</p>
+
+<h3>Add SSH Key</h3>
+
+<ol>
+<li>Open &ldquo;Git Bash&rdquo;, and type ssh-keygen and paste pub key to your profile at gitlab.</li>
+</ol>
+
+
+<p><code>javascript
+$ ssh-keygen
+$ cat ~/ssh/id_rsa.pub
+</code>
+2. Open <a href="http://ctc-hd-2/profile/keys">http://ctc-hd-2/profile/keys</a> in your web browser. Then Add SSH Key.</p>
+
+<ol>
+<li>Now you can create a new project in git, and use the instructions to create your repo in Git Bash.</li>
+</ol>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Convert bzr to git]]></title>
+    <link href="http://liminzju.github.io/blog/2014/04/25/convert-bzr-to-git/"/>
+    <updated>2014-04-25T17:02:12+08:00</updated>
+    <id>http://liminzju.github.io/blog/2014/04/25/convert-bzr-to-git</id>
+    <content type="html"><![CDATA[<h1>Convert bzr to git</h1>
+
+<h2>Overview</h2>
+
+<p>Some 3rdParty library uses bazzar to manage code, we want to use gitlab to manage those bzr code. This document is a quick instruction to convert a <code>bzr to git</code>.</p>
+
+<h3>Install related softwares</h3>
+
+<ul>
+<li>Install bzr, bzr-fastimport,<em> Install python-fastimport(0.9.2), the lastest version(0.9.4?) will cause bzr fastexport running to cant import binary stream problem. So we chose 0.9.2.My python version is 2.7.x on windows, 2.6.x on mac/linux. 2.7.x not work with bzr fastexport on mac.### Convert bzr to gitOn your linux/Mac:
+<code>bzr clone lp:xx bzr2gitcd bzr2gitgit initbzr fast-export --plain . | git fast-import
+</code></em> Now you got a existing git repo, push it to git### Push git project to gitlab* Open gitlab webpage, login and create a project, e.g. named bzr2git, following the <code>existing repo instruction to push</code> your branch, this instrunction will show when you create a new git project.
+<code>git checkout -f mastergit remote add origin git@ctc-hd-1:mili/bzr2git.gitgit push –u origin master</code>
+
+<h3>Update codeIf bzr has some new checkins, you can do the steps on your machine to import new checkins to git. If you run to some error in final step <code>git push –u origin master</code>, you can force git to push<code>git push –u origin +master</code>.</h3></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Install GitLab on centos 6.2]]></title>
+    <link href="http://liminzju.github.io/blog/2014/04/23/install-gitlab-on-centos/"/>
+    <updated>2014-04-23T17:02:12+08:00</updated>
+    <id>http://liminzju.github.io/blog/2014/04/23/install-gitlab-on-centos</id>
+    <content type="html"><![CDATA[<h1>Install GitLab on centos 6.2## Overview</h1>
+
+<p>Simple instruction to install gitlab.</p>
+
+<h3>Install</h3>
+
+<p>According to <a href="https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/README.md">reference</a>.
+Download community version of <a href="https://www.gitlab.com/downloads/">gitlab(omnibus)</a>, it’s free.
+<code>shsudo yum install openssh-serversudo yum install postfix # sendmail or exim is also OKsudo rpm -i gitlab-x.y.z_omnibus-x.el6.x86_64.rpm # this is the .rpm you downloadedsudo gitlab-ctl reconfiguresudo lokkit -s http -s ssh # open up the firewall for HTTP and SSH requestssudo gitlab-ctl start # Start all GitLab components</code></p>
+
+<h3>Configuration</h3>
+
+<p><code>
+sudo mkdir -p /etc/gitlab # Creating the gitlab.rb configuration filesudo touch /etc/gitlab/gitlab.rbsudo chmod 600 /etc/gitlab/gitlab.rbAdd to gitlab.rb:git_data_dir "/home/gd/git-data"Run sudo gitlab-ctl reconfigure</code></p>
+
+<p>Type <a href="">http://ip</a> in chrome,  if the page does not show correctly, then you need a reboot.You can login as an admin user with username <code>root</code> and password <code>5iveL!fe</code>.### Use gitlab
+First you need to add sshkey
+* Login with your own id to gitlab<em> In profile setttings, add a ssh pub key * In Linux terminal, run <code>$ ssh-keygen</code></em> Copy content from ~/.ssh/id_rsa.pub to step2</p>
+]]></content>
+  </entry>
+  
+</feed>

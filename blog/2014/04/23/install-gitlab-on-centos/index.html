@@ -3,11 +3,12 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>Setup Octopress on Mavericks - Min's notes</title>
+	<title>Install GitLab on centos 6.2 - Min's notes</title>
 	<meta name="author" content="Min">
 
 	
-	<meta name="description" content="Setup Octopress on Mavericks Octopress is a framework designed by Brandon Mathis for Jekyll, the blog aware static site generator powering Github &hellip;">
+	<meta name="description" content="Install GitLab on centos 6.2## Overview Simple instruction to install gitlab. Install According to reference.
+Download community version of gitlab( &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -74,12 +75,25 @@
 		
 	
 	<div id="content" class="inner"><article class="post">
-	<h2 class="title">Setup Octopress on Mavericks</h2>
-	<div class="entry-content"><h1>Setup Octopress on Mavericks</h1>
+	<h2 class="title">Install GitLab on Centos 6.2</h2>
+	<div class="entry-content"><h1>Install GitLab on centos 6.2## Overview</h1>
 
-<p><a href="http://octopress.org">Octopress</a> is a framework designed by Brandon Mathis for Jekyll, the blog aware static site generator powering Github Pages.</p>
+<p>Simple instruction to install gitlab.</p>
 
-<p>I use <a href="http://blog.segmentfault.com/yaashion_xiang/1190000000364677">Yasshion_向</a>&rsquo;s instruction as reference. However, ruby1.9.3 can&rsquo;t be installed by brew. So I use <a href="rvm.io">rvm</a> to install ruby. Works perfectly!</p>
+<h3>Install</h3>
+
+<p>According to <a href="https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/README.md">reference</a>.
+Download community version of <a href="https://www.gitlab.com/downloads/">gitlab(omnibus)</a>, it’s free.
+<code>shsudo yum install openssh-serversudo yum install postfix # sendmail or exim is also OKsudo rpm -i gitlab-x.y.z_omnibus-x.el6.x86_64.rpm # this is the .rpm you downloadedsudo gitlab-ctl reconfiguresudo lokkit -s http -s ssh # open up the firewall for HTTP and SSH requestssudo gitlab-ctl start # Start all GitLab components</code></p>
+
+<h3>Configuration</h3>
+
+<p><code>
+sudo mkdir -p /etc/gitlab # Creating the gitlab.rb configuration filesudo touch /etc/gitlab/gitlab.rbsudo chmod 600 /etc/gitlab/gitlab.rbAdd to gitlab.rb:git_data_dir "/home/gd/git-data"Run sudo gitlab-ctl reconfigure</code></p>
+
+<p>Type <a href="">http://ip</a> in chrome,  if the page does not show correctly, then you need a reboot.You can login as an admin user with username <code>root</code> and password <code>5iveL!fe</code>.### Use gitlab
+First you need to add sshkey
+* Login with your own id to gitlab<em> In profile setttings, add a ssh pub key * In Linux terminal, run <code>$ ssh-keygen</code></em> Copy content from ~/.ssh/id_rsa.pub to step2</p>
 </div>
 
 
@@ -96,11 +110,11 @@
   
 
 
-<time datetime="2014-04-25T17:02:12+08:00" pubdate data-updated="true">Apr 25<span>th</span>, 2014</time></div>
+<time datetime="2014-04-23T17:02:12+08:00" pubdate data-updated="true">Apr 23<span>rd</span>, 2014</time></div>
 	<div class="tags">
 
 
-	<a class='category' href='/blog/categories/octopress/'>octopress</a>
+	<a class='category' href='/blog/categories/git/'>git</a>, <a class='category' href='/blog/categories/gitlab/'>gitlab</a>
 
 
 </div>

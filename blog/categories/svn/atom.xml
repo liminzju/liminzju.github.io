@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: svn | Min's notes]]></title>
+  <link href="http://liminzju.github.io/blog/categories/svn/atom.xml" rel="self"/>
+  <link href="http://liminzju.github.io/"/>
+  <updated>2014-04-30T14:42:45+08:00</updated>
+  <id>http://liminzju.github.io/</id>
+  <author>
+    <name><![CDATA[Min]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Convert svn to git]]></title>
+    <link href="http://liminzju.github.io/blog/2014/04/30/conver-svn-to-git/"/>
+    <updated>2014-04-30T17:02:12+08:00</updated>
+    <id>http://liminzju.github.io/blog/2014/04/30/conver-svn-to-git</id>
+    <content type="html"><![CDATA[<h1>Convert svn to git: case study <code>axis2</code> project</h1>
+
+<h3>About me</h3>
+
+<p>This page is to desribe svn to git conversion with taking <code>axis2/rampart</code>(under Z:\3rdParty_Source) for case study.</p>
+
+<h3>Background</h3>
+
+<p><code>axis2/rampart</code> is 3rdParty code used in our product. These two projects were added to clearcase 2 years ago. The offical code is managed by svn. We want to have our work based code storing to gitlab for further usage.</p>
+
+<h3>Problems</h3>
+
+<ol>
+<li>These two projects don&rsquo;t have svn information. We don&rsquo;t know their svn revision.</li>
+<li>Both of the projects have tons of checkins/tags/branches. We only need code/history under trunk.</li>
+</ol>
+
+
+<h3>Find code revision</h3>
+
+<p>First we need to check the clearcase version tree to get the first checkin time of <code>axis2c-src-latest-pre-1.7.0.zip</code>. It is about 2010-08.</p>
+
+<p>Second svn co the latest repo:</p>
+
+<p><code>
+$ svn co http://svn.apache.org/repos/asf/axis/axis2/c/core/trunk
+</code></p>
+
+<p>Then we can use <code>svn log</code> to get the logs before <code>2010-08</code>.</p>
+
+<p>On windows, I have <code>TortoiseSVN</code> installed, it has GUI to find log for specific file. And we can use <code>WINMerge</code> to compare folder.</p>
+
+<p>Following is what I do to find the revision:</p>
+
+<ol>
+<li>On Win, unzip <code>axis2c-src-latest-pre-1.7.0.zip</code> to <code>axis2c-src-latest-pre-1.7.0</code>.</li>
+<li>On Linux, pick a revison number before <code>2010-08</code> by using svn log, for example <code>r965406</code>.</li>
+<li>On Win, update windows code which with folder <code>axis2c</code> to revision <code>r965406</code>.</li>
+<li>Compare folder <code>axis2c-src-latest-pre-1.7.0</code> and <code>axis2c</code>.</li>
+<li>If code not match, use <code>TortoiseSVN</code> to look the checkin log of diff file. Then Pick an earlier revision.</li>
+<li>Report step 3 &ndash; step 5 until you find the right revison.</li>
+</ol>
+
+
+<p>Finally, I find the axis2c revision is <code>965406</code>. And rampart is <code>926565</code>.</p>
+
+<h3>Svn to git</h3>
+
+<ul>
+<li>Fetch svn repo by git-svn</li>
+</ul>
+
+
+<p><code>
+$ makedir axis2c
+$ cd axis2c
+$ git svn init http://svn.apache.org/repos/asf/axis/axis2/c/core/trunk
+$ git fetch // This will take a few hours since axis2c has 1.5 million revisions
+</code>
+* create project on gitlab for axis2c
+* create branch/tag for axis2c r965406 in git</p>
+
+<p>```
+$ git svn find-rev r965406
+7e3146268ea776206f146473ffd172ddc18cbbf8
+$ git checkout 7e3146268ea776206f146473ffd172ddc18cbbf8
+$ git tag -a mstr_r965406
+$ git checkout -b mstrbased
+$ git remote add origin git@ctc-hd-2:axis2c/axis2c.git
+$ git push -u origin master
+$ git push -u origin &mdash;tag mstr_r965406
+$ git push -u origin mstrbased</p>
+
+<p>```</p>
+
+<ul>
+<li>Do same thing for rampart</li>
+</ul>
+
+
+<p>```
+$ makedir rampart
+$ cd rampart
+$ git svn init <a href="http://svn.apache.org/repos/asf/axis/axis2/c/rampart/trunk">http://svn.apache.org/repos/asf/axis/axis2/c/rampart/trunk</a>
+$ git fetch // This will take a few hours since rampart has 1.1 million revisions</p>
+
+<p>$ git svn find-rev r926565
+b78df61ab875f378eb2378ee2b60fecd9f9f71ac
+$ git checkout b78df61ab875f378eb2378ee2b60fecd9f9f71ac
+$ git tag -a mstr_r926565
+$ git checkout -b mstrbased
+$ git remote add origin git@ctc-hd-2:axis2c/rampart.git
+$ git push -u origin master
+$ git push -u origin &mdash;tag mstr_r926565
+$ git push -u origin mstrbased</p>
+
+<p>```</p>
+
+<h3>instructions for git-svn fetch in remote repo</h3>
+
+<p>Take rampart for example:</p>
+
+<p>```
+$ git clone git@ctc-hd-2:axis2c/rampart.git
+$ cd rampart
+$ git svn init <a href="http://svn.apache.org/repos/asf/axis/axis2/c/rampart/trunk">http://svn.apache.org/repos/asf/axis/axis2/c/rampart/trunk</a>  // or edit .git/config directly
+$ cat .git/config
+[core]</p>
+
+<pre><code>repositoryformatversion = 0
+filemode = true
+bare = false
+logallrefupdates = true
+</code></pre>
+
+<p>[remote &ldquo;origin&rdquo;]</p>
+
+<pre><code>fetch = +refs/heads/*:refs/remotes/origin/*
+url = git@ctc-hd-2:axis2c/rampart.git
+</code></pre>
+
+<p>[branch &ldquo;master&rdquo;]</p>
+
+<pre><code>remote = origin
+merge = refs/heads/master
+</code></pre>
+
+<p>[svn-remote &ldquo;svn&rdquo;]</p>
+
+<pre><code>url = http://svn.apache.org/repos/asf/axis/axis2/c/rampart/trunk
+fetch = :refs/remotes/git-svn
+</code></pre>
+
+<p>//Copy sha from original repo:
+$ echo  50e548d713a6aa58c527d6ad45b3381107f9e83a >> .git/refs/remotes/git-svn
+$ git fetch</p>
+
+<p>```</p>
+
+<p>Racap:</p>
+
+<ul>
+<li>Add the svn-remote to .git/config</li>
+<li>Add a pointer/SHA in .git/refs/remotes/git-svn</li>
+</ul>
+
+]]></content>
+  </entry>
+  
+</feed>
